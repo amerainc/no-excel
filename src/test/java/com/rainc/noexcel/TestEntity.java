@@ -2,12 +2,7 @@ package com.rainc.noexcel;
 
 import com.rainc.noexcel.annotation.ExcelEntity;
 import com.rainc.noexcel.annotation.ExcelField;
-import com.rainc.noexcel.meta.BaseErrMsg;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
+import lombok.Data;
 
 import java.util.Date;
 
@@ -15,20 +10,18 @@ import java.util.Date;
  * @author rainc
  * @date 2021/8/12
  */
-@ExcelEntity(title = "测试",maxSize = Integer.MAX_VALUE)
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@ToString
-public class TestEntity extends BaseErrMsg {
+@ExcelEntity(title = "测试")
+@Data
+public class TestEntity{
+    //require选项必填时输出会带有*好，读取时无必填字段则会抛出异常
     @ExcelField(name = "必填选项", require = true)
-    String str;
+    private String str;
+    //在枚举类的情况下,param参数可以指定excel写入读取时使用的枚举类属性
     @ExcelField(name = "枚举类转换", param = "i18n")
-    TrlAlertColorEnum anEnum;
+    private ColorEnum colorEnum;
     @ExcelField(name = "长整型")
-    short number;
+    private Long number;
     @ExcelField(name = "时间")
-    Date date;
-    @ExcelField(name="级联测试",converter = CascadeConverter.class,cascadeDepend="枚举类转换")
-    String level;
+    private Date date;
 }
+

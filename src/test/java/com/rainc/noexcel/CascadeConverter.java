@@ -24,7 +24,6 @@ public class CascadeConverter extends BaseCascadeConverter<String> implements Ca
         Map<String, String> gold = new LinkedHashMap<>();
         gold.put("bgold","大金黄");
         gold.put("sgold","小金黄");
-
         map.put("红色",red);
         map.put("黄色", yellow);
         map.put("金黄色",gold);

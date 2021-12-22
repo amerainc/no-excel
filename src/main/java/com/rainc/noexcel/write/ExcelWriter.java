@@ -1,6 +1,7 @@
 package com.rainc.noexcel.write;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.rainc.noexcel.BaseExcel;
@@ -247,7 +248,7 @@ public class ExcelWriter<T> extends BaseExcel<T> {
         DataValidationHelper dataValidationHelper = this.sheet.getDataValidationHelper();
         // 设置数据有效性加载在哪个单元格上。
         // 四个参数分别是：起始行、终止行、起始列、终止列
-        CellRangeAddressList cellRangeAddressList = new CellRangeAddressList(this.curIndex+1, isXlsx()?1048575:65535, cellIndex, cellIndex);
+        CellRangeAddressList cellRangeAddressList = new CellRangeAddressList(this.curIndex, isXlsx()?1048575:65535, cellIndex, cellIndex);
         // 数据有效性对象
         DataValidationConstraint constraint = dataValidationHelper.createFormulaListConstraint(formula);
         DataValidation validation = dataValidationHelper.createValidation(constraint, cellRangeAddressList);
@@ -307,7 +308,17 @@ public class ExcelWriter<T> extends BaseExcel<T> {
         this.writeData(data);
         this.flushData(outputStream);
     }
-
+    /**
+     * 写数据刷新并关闭输出流
+     *
+     * @param data         需要写入的数据
+     * @param outputStream 输出流
+     */
+    public void writeDataAndClose(List<T> data, OutputStream outputStream) {
+        this.writeData(data);
+        this.flushData(outputStream);
+        IoUtil.close(outputStream);
+    }
     /**
      * 输出模板
      *

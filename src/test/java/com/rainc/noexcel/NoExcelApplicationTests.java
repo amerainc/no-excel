@@ -8,10 +8,10 @@ import com.rainc.noexcel.write.ExcelWriter;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -36,11 +36,10 @@ class NoExcelApplicationTests {
     public void createFile() {
         List<TestEntity> testEntityList = new ArrayList<>();
         TestEntity testEntity = new TestEntity();
-        testEntity.setDate(null);
+        testEntity.setDate(new Date());
         testEntity.setStr("测试文字");
-        testEntity.setNumber((short) 123);
-        testEntity.setAnEnum(TrlAlertColorEnum.GOLD);
-        testEntity.setLevel("sred");
+        testEntity.setNumber(123L);
+        testEntity.setColorEnum(ColorEnum.GOLD);
         for (int i = 0; i < 100; i++) {
             testEntityList.add(testEntity);
         }
@@ -65,21 +64,7 @@ class NoExcelApplicationTests {
         }
     }
 
-    @Test
-    public void readFile() {
-        String path = getClass().getResource("/").getPath();
-        ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
-        try (ExcelReader<TestEntity> excelReader = builder.build(new FileInputStream(path + "readFile.xls"))) {
-            StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
-            excelReader.readData(System.out::println);
-            stopWatch.stop();
-            System.out.println(stopWatch.getLastTaskTimeMillis());
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void readFileConcurrent() throws InterruptedException {

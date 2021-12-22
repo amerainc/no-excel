@@ -21,7 +21,12 @@
             <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
         </license>
     </licenses>
-
+<scm>
+    <tag>master</tag>
+    <url>https://github.com/amerainc/no-excel.git</url>
+    <connection>scm:git:https://github.com/amerainc/no-excel.git</connection>
+    <developerConnection>scm:git:git@github.com:amerainc/no-excel.git</developerConnection>
+</scm>
 
     <properties>
         <java.version>1.8</java.version>
@@ -112,15 +117,27 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
+                <version>1.5</version>
                 <executions>
                     <execution>
+                        <id>sign-artifacts</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>oss</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -134,11 +151,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>oss</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>oss</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 </project>

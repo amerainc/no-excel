@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.amerainc</groupId>
+    <groupId>io.github.amerainc</groupId>
     <artifactId>no-excel</artifactId>
     <version>2021.10.15</version>
 

@@ -1,5 +1,6 @@
 package com.rainc.noexcel;
 
+import cn.hutool.core.date.StopWatch;
 import com.rainc.noexcel.builder.ExcelReaderBuilder;
 import com.rainc.noexcel.builder.ExcelWriterBuilder;
 import com.rainc.noexcel.read.ExcelReader;
@@ -12,6 +13,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 class NoExcelApplicationTests {
 
@@ -63,14 +67,37 @@ class NoExcelApplicationTests {
 
     @Test
     public void readFile() {
+        String path = getClass().getResource("/").getPath();
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
-        for (int i = 0; i < 100; i++) {
-            try (ExcelReader<TestEntity> excelReader = builder.build(new FileInputStream("createTemplate.xls"))) {
-                final List<TestEntity> testEntityList = excelReader.readData();
-                System.out.println(testEntityList);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        try (ExcelReader<TestEntity> excelReader = builder.build(new FileInputStream(path + "readFile.xls"))) {
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            excelReader.readData(System.out::println);
+            stopWatch.stop();
+            System.out.println(stopWatch.getLastTaskTimeMillis());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void readFileConcurrent() throws InterruptedException {
+        String path = getClass().getResource("/").getPath();
+        ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(10,
+                10,1000, TimeUnit.MILLISECONDS,new ArrayBlockingQueue<>(1000));
+        StopWatch stopWatch = new StopWatch();
+        try (ExcelReader<TestEntity> excelReader = builder.build(new FileInputStream(path+"readFile.xls"))) {
+            stopWatch.start();
+            excelReader.readDataConcurrent(System.out::println,threadPoolExecutor,10);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            threadPoolExecutor.shutdown();
+            threadPoolExecutor.awaitTermination(1, TimeUnit.HOURS);
+            stopWatch.stop();
+            System.out.println(stopWatch.getLastTaskTimeMillis());
         }
     }
 }

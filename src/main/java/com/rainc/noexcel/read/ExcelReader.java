@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -113,22 +114,58 @@ public class ExcelReader<T> extends BaseExcel<T> {
      * @return 读取到的数据列表
      */
     public List<T> readData() {
+       return readData(0,1);
+    }
+
+    /**
+     * 读取数据
+     * @param index 当前分片
+     * @param total 总分片
+     * @return 读取到的数据列表
+     */
+    public List<T> readData(int index,int total) {
         checkClosed();
         List<T> list = new ArrayList<>(this.data.size());
-        readData(list::add);
+        readData(list::add,index,total);
         return list;
     }
 
     /**
      * 消费数据
      *
-     * @param consumer 按行消费
+     * @param consumer 消费者
      */
     public void readData(Consumer<T> consumer) {
+        readData(consumer,0,1);
+    }
+
+    /**
+     * 消费数据
+     *
+     * @param consumer 消费者
+     */
+    public void readDataConcurrent(Consumer<T> consumer, Executor executor,int total) {
+        for (int i = 0; i < total; i++) {
+            int index = i;
+            executor.execute(()-> readData(consumer, index,total));
+        }
+    }
+
+    /**
+     * 分片消费数据
+     * @param consumer 消费者
+     * @param index 当前分片
+     * @param total 总分片
+     */
+    public void readData(Consumer<T> consumer,int index,int total) {
         checkClosed();
         List<Row> rows = this.data;
-        for (Row row : rows) {
-            T data = readData(row);
+        int size = rows.size();
+        int fragment = size / total;
+        int start = fragment*index;
+        int end = index==(total-1)?size:(fragment*(index+1));
+        for (int i = start; i < end; i++) {
+            T data = readData(rows.get(i));
             //消费数据
             consumer.accept(data);
         }

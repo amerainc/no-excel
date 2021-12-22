@@ -15,7 +15,7 @@ import java.util.Date;
  * @author rainc
  * @date 2021/8/12
  */
-@ExcelEntity(title = "测试")
+@ExcelEntity(title = "测试",maxSize = Integer.MAX_VALUE)
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)

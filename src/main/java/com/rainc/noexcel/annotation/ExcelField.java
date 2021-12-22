@@ -41,7 +41,6 @@ public @interface ExcelField {
 
     /**
      * 级联依赖字段 字段名(不填默认上一级为前一个字段)
-     * @return
      */
     String cascadeDepend() default "";
 }

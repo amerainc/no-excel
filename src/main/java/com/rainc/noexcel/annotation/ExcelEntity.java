@@ -26,7 +26,6 @@ public @interface ExcelEntity {
 
     /**
      * excel显示头部
-     * @return
      */
     boolean showHead() default true;
 

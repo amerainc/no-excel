@@ -15,8 +15,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 public interface StyleProvider extends InstanceProvider<StyleProvider> {
     /**
      * 获取样式
-     * @param excelWriter
-     * @return
+     * @param excelWriter excelWriter实例
+     * @return 样式
      */
     default CellStyle getStyle(ExcelWriter<?> excelWriter) {
         Workbook workbook = excelWriter.getWorkbook();
@@ -45,7 +45,6 @@ public interface StyleProvider extends InstanceProvider<StyleProvider> {
 
     /**
      * 样式默认单例
-     * @return
      */
     @Override
     default boolean isSingleton() {

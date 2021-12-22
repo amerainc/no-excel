@@ -40,7 +40,7 @@ class NoExcelApplicationTests {
         testEntity.setStr("测试文字");
         testEntity.setNumber((short) 123);
         testEntity.setAnEnum(TrlAlertColorEnum.GOLD);
-//        testEntity.setLevel("sred");
+        testEntity.setLevel("sred");
         for (int i = 0; i < 100; i++) {
             testEntityList.add(testEntity);
         }

@@ -29,6 +29,6 @@ public class TestEntity extends BaseErrMsg {
     short number;
     @ExcelField(name = "时间")
     Date date;
-//    @ExcelField(name="级联测试",converter = CascadeConverter.class,cascadeDepend="枚举类转换")
-//    String level;
+    @ExcelField(name="级联测试",converter = CascadeConverter.class,cascadeDepend="枚举类转换")
+    String level;
 }

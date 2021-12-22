@@ -8,6 +8,7 @@ import com.rainc.noexcel.meta.ExcelEntityMeta;
 import com.rainc.noexcel.meta.ExcelFieldMeta;
 import com.rainc.noexcel.style.StyleProviderHelper;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -73,8 +74,9 @@ public class ExcelMetaUtil {
                     excelFieldMeta.setFieldName(field.getName());
                     excelFieldMeta.setField(field);
                     excelFieldMeta.setFieldClz(field.getType());
-                    excelFieldMeta.setGetMethod(MethodUtil.getGetMethodWithField(field, clz));
-                    excelFieldMeta.setSetMethod(MethodUtil.getSetMethodWithField(field, clz));
+                    PropertyDescriptor propertyDescriptor = MethodUtil.getPropertyDescriptor(field, clz);
+                    excelFieldMeta.setGetMethod(propertyDescriptor.getReadMethod());
+                    excelFieldMeta.setSetMethod(propertyDescriptor.getWriteMethod());
                     return excelFieldMeta;
                 })
                 .sorted(Comparator.comparing(ExcelFieldMeta::getSort))

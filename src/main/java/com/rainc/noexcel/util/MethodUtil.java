@@ -2,11 +2,10 @@ package com.rainc.noexcel.util;
 
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.lang.func.LambdaUtil;
-import com.rainc.noexcel.meta.BaseErrMsg;
 import lombok.SneakyThrows;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 /**
  * 方法工具
@@ -18,40 +17,39 @@ public class MethodUtil {
     final public static String IS = "is";
     final public static String SET = "set";
 
-
-    public static Method getGetMethodWithField(Field field, Class<?> clz) {
-        Method method=null;
-        try {
-            method=clz.getMethod(GET + upperFirst(field.getName()));
-        } catch (NoSuchMethodException ignored) {
-        }
-        return method;
+    /**
+     * 得到属性描述符
+     * @param field 属性
+     * @param clz 类
+     * @return 描述符
+     */
+    @SneakyThrows
+    public static PropertyDescriptor getPropertyDescriptor(Field field, Class<?> clz){
+        return new PropertyDescriptor(field.getName(),clz);
     }
 
-
-    public static Method getSetMethodWithField(Field field, Class<?> clz) {
-        Method method=null;
-        try {
-            method = clz.getMethod(SET + upperFirst(field.getName()), (Class<?>) field.getGenericType());
-        } catch (NoSuchMethodException e) {
-            try {
-                method=clz.getMethod(IS + upperFirst(field.getName()),(Class<?>) field.getGenericType());
-            } catch (NoSuchMethodException ignored) {
-            }
-        }
-        return method;
-    }
-
+    /**
+     * 通过get方法拿到属性名
+     * @param func1 get方法
+     * @return 属性名
+     */
     public static <T>String getFieldNameWithGetter(Func1<T,?> func1) {
         String methodName = LambdaUtil.getMethodName(func1);
-        String fieldName = methodName.replace(GET, "");
+        String fieldName;
+        if (methodName.startsWith(GET)) {
+            fieldName = methodName.replaceFirst(GET, "");
+        } else if (methodName.startsWith(IS)) {
+            fieldName = methodName.replaceFirst(IS, "");
+        } else {
+            fieldName = methodName;
+        }
         return lowerCaseFirst(fieldName);
     }
     /**
      * 首字母大写
      *
-     * @param oldStr
-     * @return
+     * @param oldStr 需要首字母大写的字符串
+     * @return 首字母大写后的字符串
      */
     private static String upperFirst(String oldStr) {
         char[] chars = oldStr.toCharArray();
@@ -65,8 +63,8 @@ public class MethodUtil {
     /**
      * 首字母小写
      *
-     * @param oldStr
-     * @return
+     * @param oldStr 需要首字母小写的字符串
+     * @return 首字母小写后的字符串
      */
     private static String lowerCaseFirst(String oldStr) {
         char[] chars = oldStr.toCharArray();
@@ -75,16 +73,5 @@ public class MethodUtil {
         }
         chars[0] ^= 32;
         return String.valueOf(chars);
-    }
-
-    @SneakyThrows
-    public static void main(String[] args) {
-//        Class<ExcelFieldMeta> excelFieldMetaClass = ExcelFieldMeta.class;
-//        Field field = excelFieldMetaClass.getDeclaredField("require");
-//
-//        Method setMethodWithField = getSetMethodWithField(field, excelFieldMetaClass);
-//        System.out.println(setMethodWithField);
-        String fieldName = getFieldNameWithGetter(BaseErrMsg::getErrMsg);
-        System.out.println(fieldName);
     }
 }

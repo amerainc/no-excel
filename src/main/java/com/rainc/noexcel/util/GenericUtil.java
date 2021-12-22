@@ -10,9 +10,9 @@ import java.lang.reflect.Type;
  */
 public class GenericUtil {
     /**
-     * 获得第一个泛型类
-     * @param clz
-     * @return
+     * 获得第一个泛型的真实类
+     * @param clz 需要取得泛型的类
+     * @return 泛型真实类
      */
     public static Class<?> getFirstGenericType(Class<?> clz){
         Type genericSuperclass = clz.getGenericSuperclass();
@@ -25,20 +25,16 @@ public class GenericUtil {
         }
         return null;
     }
-
+    /**
+     * 获得第一个泛型的真实类
+     * @param genericSuperclass 参数
+     * @return 泛型真实类
+     */
     private static Class<?> getFirstGenericType(ParameterizedType genericSuperclass) {
         Type actualTypeArgument = genericSuperclass.getActualTypeArguments()[0];
         if (actualTypeArgument instanceof ParameterizedType) {
            return (Class<?>) ((ParameterizedType) actualTypeArgument).getRawType();
         }
         return (Class<?>) actualTypeArgument;
-    }
-
-    private static Class<?> getGenClass(Class<?> clz){
-        return clz.getSuperclass();
-    }
-
-    public static void main(String[] args) {
-
     }
 }

@@ -1,0 +1,8 @@
+com.rainc.noexcel.convert.impl.DefaultDateFieldConverter
+com.rainc.noexcel.convert.impl.DefaultDoubleFieldConverter
+com.rainc.noexcel.convert.impl.DefaultEnumFieldConverter
+com.rainc.noexcel.convert.impl.DefaultIntegerFieldConverter
+com.rainc.noexcel.convert.impl.DefaultLongFieldConverter
+com.rainc.noexcel.convert.impl.DefaultShortFieldConverter
+com.rainc.noexcel.convert.impl.DefaultStringFieldConverter
+com.rainc.noexcel.convert.impl.DefaultObjectFieldConvert

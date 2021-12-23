@@ -23,5 +23,7 @@ public class TestEntity{
     private Long number;
     @ExcelField(name = "时间")
     private Date date;
+    @ExcelField(name = "级联",converter = CascadeConverter.class,cascadeDepend = "枚举类转换")
+    private String cascade;
 }
 

@@ -4,7 +4,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
 /**
- * 默认头部样式
+ * 默认表头样式
  * @author rainc
  * @date 2021/8/15
  */

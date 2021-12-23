@@ -51,7 +51,7 @@ public class ExcelReader<T> extends BaseExcel<T> {
 
 
     /**
-     * 初始化头部
+     * 初始化表头
      */
     private void initHead() {
         int headIndex = this.curIndex++;
@@ -67,7 +67,7 @@ public class ExcelReader<T> extends BaseExcel<T> {
             String value = cell.getStringCellValue();
             value = RequireUtil.requireTitleToTitle(value);
             final int sort = i;
-            //通过excel的头部和字段顺序进行匹配
+            //通过excel的表头和字段顺序进行匹配
             excelFieldMetaMap.computeIfPresent(value, (key, excelFieldMeta) -> {
                 excelFieldMeta.setSort(sort);
                 return excelFieldMeta;

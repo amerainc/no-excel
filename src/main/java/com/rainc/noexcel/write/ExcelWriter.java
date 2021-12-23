@@ -181,6 +181,10 @@ public class ExcelWriter<T> extends BaseExcel<T> {
      * 初始化表头
      */
     private void initHead() {
+        //如果不展示表头则不进行表头初始化
+        if (!this.excelEntityMeta.isShowHead()) {
+            return;
+        }
         int headIndex = curIndex++;
         //创建表头行
         Row headRow = RowUtil.getRow(headIndex, this.sheet);

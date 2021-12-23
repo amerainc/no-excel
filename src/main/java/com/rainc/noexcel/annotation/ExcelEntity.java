@@ -25,7 +25,7 @@ public @interface ExcelEntity {
     boolean showTitle() default true;
 
     /**
-     * excel显示头部
+     * excel显示表头
      */
     boolean showHead() default true;
 
@@ -40,12 +40,12 @@ public @interface ExcelEntity {
     Class<? extends StyleProvider> titleStyle() default DefaultTitleStyleProvider.class;
 
     /**
-     * 必填内容的头部样式
+     * 必填内容的表头样式
      */
     Class<? extends StyleProvider> headRequireStyle() default DefaultHeadRequireStyleProviderProvider.class;
 
     /**
-     * 头部样式
+     * 表头样式
      */
     Class<? extends StyleProvider> headStyle() default DefaultHeadStyleProvider.class;
 

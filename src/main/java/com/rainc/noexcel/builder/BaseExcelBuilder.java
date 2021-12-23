@@ -48,11 +48,11 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
      */
     protected StyleProvider titleStyle;
     /**
-     * 必填内容的头部样式
+     * 必填内容的表头样式
      */
     protected StyleProvider headRequireStyle;
     /**
-     * 头部样式
+     * 表头样式
      */
     protected StyleProvider headStyle;
     /**

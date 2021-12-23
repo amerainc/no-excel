@@ -26,7 +26,7 @@ public class ExcelEntityMeta extends CloneSupport<ExcelEntityMeta> {
      */
     boolean showTitle;
     /**
-     * excel是否显示头部
+     * excel是否显示表头
      */
     boolean showHead;
     /**
@@ -38,11 +38,11 @@ public class ExcelEntityMeta extends CloneSupport<ExcelEntityMeta> {
      */
     StyleProvider titleStyle;
     /**
-     * 必填内容的头部样式
+     * 必填内容的表头样式
      */
     StyleProvider headRequireStyle;
     /**
-     * 头部样式
+     * 表头样式
      */
     StyleProvider headStyle;
     /**

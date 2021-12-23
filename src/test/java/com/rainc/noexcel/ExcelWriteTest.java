@@ -29,8 +29,9 @@ public class ExcelWriteTest {
         for (int i = 0; i < 100; i++) {
             testEntityList.add(testEntity);
         }
-        ExcelWriterBuilder<TestEntity> builder = ExcelWriterBuilder.builder(TestEntity.class);
+
         //写入
+        ExcelWriterBuilder<TestEntity> builder = ExcelWriterBuilder.builder(TestEntity.class);
         try (ExcelWriter<TestEntity> excelWriter = builder.build()) {
             excelWriter.writeDataAndClose(testEntityList, new FileOutputStream("createFile.xls"));
         } catch (IOException e) {

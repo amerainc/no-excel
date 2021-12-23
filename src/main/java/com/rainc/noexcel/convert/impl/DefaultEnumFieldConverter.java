@@ -7,6 +7,7 @@ import com.rainc.noexcel.meta.ExcelFieldMeta;
 import lombok.SneakyThrows;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,6 @@ public class DefaultEnumFieldConverter extends BaseMapFieldConverter<Enum<?>> {
             } else {
                 return ReflectUtil.getFieldValue(anEnum, param).toString();
             }
-        }));
+        },(a,b)->a, LinkedHashMap::new));
     }
 }

@@ -13,7 +13,7 @@ import java.util.Date;
 @ExcelEntity(title = "测试")
 @Data
 public class TestEntity{
-    //require选项必填时输出会带有*好，读取时无必填字段则会抛出异常
+    //require选项必填时输出会带有*号，读取时无必填字段则会抛出异常
     @ExcelField(name = "必填选项", require = true)
     private String str;
     //在枚举类的情况下,param参数可以指定excel写入读取时使用的枚举类属性

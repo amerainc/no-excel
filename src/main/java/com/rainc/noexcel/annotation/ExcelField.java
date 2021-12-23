@@ -40,7 +40,7 @@ public @interface ExcelField {
     String param() default "";
 
     /**
-     * 级联依赖字段 字段名(不填默认上一级为前一个字段)
+     * 级联依赖字段的字段名(不填默认依赖前一个字段)
      */
     String cascadeDepend() default "";
 }

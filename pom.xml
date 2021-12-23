@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.amerainc</groupId>
     <artifactId>no-excel</artifactId>
-    <version>2021.12.23</version>
+    <version>2021.12.24-SNAPSHOT</version>
     <name>no-excel</name>
     <description>no-excel</description>
 
@@ -68,7 +66,13 @@
             <version>${junit.version}</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
+    <dependency>
+<scope>provided</scope>
+<groupId>javax.servlet</groupId>
+<artifactId>javax.servlet-api</artifactId>
+<version>4.0.1</version>
+</dependency>
+</dependencies>
 
     <build>
         <plugins>

@@ -17,12 +17,17 @@ import com.rainc.noexcel.util.RequireUtil;
 import com.rainc.noexcel.util.RowUtil;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -323,6 +328,48 @@ public class ExcelWriter<T> extends BaseExcel<T> {
         this.flushData(outputStream);
         IoUtil.close(outputStream);
     }
+
+    /**
+     * 写数据到web请求
+     * @param data 数据
+     * @param fileName 文件名
+     * @param request 请求
+     * @param response 响应
+     */
+    @SneakyThrows
+    public void writeDataToResponse(List<T> data, String fileName, HttpServletRequest request, HttpServletResponse response) {
+        OutputStream outputStream = null;
+        try {
+            // 设置header
+            String agent = request.getHeader("User-Agent");
+            boolean msieFlag = agent != null && agent.contains("MSIE") && !agent.contains(
+                    "Firefox");
+            if (msieFlag) {
+                fileName = URLEncoder.encode(fileName, "UTF-8");
+            } else {
+                fileName = new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+            }
+            response.setHeader("Content-type", "application/vnd.ms-excel");
+            response.addHeader("Content-Disposition", "filename=\"" + fileName + "\"");
+            outputStream = response.getOutputStream();
+            this.writeData(data,outputStream);
+            outputStream.flush();
+        } finally {
+            IoUtil.close(outputStream);
+        }
+    }
+
+    /**
+     * 写数据刷新并关闭输出流
+     * @param fileName 文件名
+     * @param request 请求
+     * @param response 响应
+     */
+    @SneakyThrows
+    public void writeTemplateToResponse(String fileName, HttpServletRequest request, HttpServletResponse response) {
+        this.writeDataToResponse(Collections.singletonList(ReflectUtil.newInstance(this.clz)),fileName,request,response);
+    }
+
     /**
      * 输出模板
      *
@@ -330,6 +377,19 @@ public class ExcelWriter<T> extends BaseExcel<T> {
      */
     public void writeTemplate(OutputStream outputStream) {
         this.writeData(Collections.singletonList(ReflectUtil.newInstance(this.clz)), outputStream);
+    }
+
+    /**
+     * 输出模板
+     *
+     * @param outputStream 输出流
+     */
+    public void writeTemplateAndClose(OutputStream outputStream) {
+        try {
+            this.writeTemplate(outputStream);
+        } finally {
+            IoUtil.close(outputStream);
+        }
     }
 
     /**

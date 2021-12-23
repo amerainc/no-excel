@@ -40,6 +40,10 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
      */
     protected Boolean showTitle;
     /**
+     * 是否显示表头
+     */
+    protected Boolean showHead;
+    /**
      * excel导出时的标题名
      */
     protected String title;
@@ -126,6 +130,7 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
         ExcelEntityMeta excelEntityMeta = baseExcel.getExcelEntityMeta();
         Optional.ofNullable(this.maxSize).ifPresent(excelEntityMeta::setMaxSize);
         Optional.ofNullable(this.showTitle).ifPresent(excelEntityMeta::setShowTitle);
+        Optional.ofNullable(this.showHead).ifPresent(excelEntityMeta::setShowHead);
         Optional.ofNullable(this.title).ifPresent(excelEntityMeta::setTitle);
         Optional.ofNullable(this.titleStyle).ifPresent(excelEntityMeta::setTitleStyle);
         Optional.ofNullable(this.headStyle).ifPresent(excelEntityMeta::setHeadStyle);

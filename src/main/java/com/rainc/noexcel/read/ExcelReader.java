@@ -202,27 +202,6 @@ public class ExcelReader<T> extends BaseExcel<T> {
     }
 
     /**
-     * 读取数据并关闭流
-     *
-     * @return 读取到的数据列表
-     */
-    public List<T> readDataAndClose() {
-        List<T> list = readData();
-        this.close();
-        return list;
-    }
-
-    /**
-     * 消费数据
-     *
-     * @param consumer 按行消费
-     */
-    public void readDataAndClose(Consumer<T> consumer) {
-        readData(consumer);
-        this.close();
-    }
-
-    /**
      * 拼接错误信息
      *
      * @param errMsg         错误信息拼接器

@@ -59,7 +59,7 @@ public class ExcelReadTest {
     @Test
     public void readerrorFile() {
         //读取excel
-        String path = getClass().getResource("/").getPath()+"readFile.xls";
+        String path = getClass().getResource("/").getPath()+"readerrFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
         List<TestEntity> testEntities;
         try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {
@@ -67,6 +67,7 @@ public class ExcelReadTest {
         }
         //过滤成功的数据
         List<TestEntity> success = testEntities.stream().filter(BaseErrMsg::hasNotErrMsg).collect(Collectors.toList());
+        System.out.println(success);
         //过滤成功的数据
         List<TestEntity> error = testEntities.stream().filter(BaseErrMsg::hasErrMsg).collect(Collectors.toList());
         //将失败的数据重新导成excel

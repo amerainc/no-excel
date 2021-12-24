@@ -31,7 +31,9 @@ public class ExcelWriteTest {
         }
 
         //写入
-        ExcelWriterBuilder<TestEntity> builder = ExcelWriterBuilder.builder(TestEntity.class).ignoreErrMsg();
+        ExcelWriterBuilder<TestEntity> builder = ExcelWriterBuilder.builder(TestEntity.class)
+                //忽略errMsg行
+                .ignoreErrMsg();
         try (ExcelWriter<TestEntity> excelWriter = builder.build()) {
             excelWriter.writeDataAndClose(testEntityList, new FileOutputStream("createFile.xls"));
         } catch (IOException e) {

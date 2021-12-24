@@ -31,9 +31,7 @@ public class ExcelWriteTest {
         }
 
         //写入
-        ExcelWriterBuilder<TestEntity> builder = ExcelWriterBuilder.builder(TestEntity.class)
-                //忽略errMsg行
-                .ignoreErrMsg();
+        ExcelWriterBuilder<TestEntity> builder = ExcelWriterBuilder.builder(TestEntity.class).ignoreErrMsg();
         try (ExcelWriter<TestEntity> excelWriter = builder.build()) {
             excelWriter.writeDataAndClose(testEntityList, new FileOutputStream("createFile.xls"));
         } catch (IOException e) {
@@ -44,7 +42,11 @@ public class ExcelWriteTest {
     @Test
     public void writeTemplate() {
         //构造模板
-        try (ExcelWriter<TestEntity> excelWriter = ExcelWriterBuilder.builder(TestEntity.class).ignoreErrMsg().build();
+        try (ExcelWriter<TestEntity> excelWriter = ExcelWriterBuilder.builder(TestEntity.class)
+                //忽略errMsg行
+                .ignoreErrMsg()
+                //构建
+                .build();
              FileOutputStream fileOutputStream = new FileOutputStream("createTemplate.xls")) {
             excelWriter.writeTemplate(fileOutputStream);
         } catch (IOException e) {

@@ -118,6 +118,10 @@ public enum ColorEnum {
     }
 ```
 
+导出效果如下所示
+
+<img src="img/image-20211224145118494.png" alt="image-20211224145118494" style="zoom:50%;" />
+
 ## excel导入
 
 直接读取将数据转换成实体类列表返回

@@ -2,7 +2,10 @@ package com.rainc.noexcel;
 
 import com.rainc.noexcel.annotation.ExcelEntity;
 import com.rainc.noexcel.annotation.ExcelField;
-import lombok.Data;
+import com.rainc.noexcel.meta.BaseErrMsg;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Date;
 
@@ -11,8 +14,10 @@ import java.util.Date;
  * @date 2021/8/12
  */
 @ExcelEntity(title = "测试")
-@Data
-public class TestEntity{
+@Getter
+@Setter
+@ToString
+public class TestEntity extends BaseErrMsg {
     //require选项必填时输出会带有*号，读取时无必填字段则会抛出异常
     @ExcelField(name = "必填选项", require = true)
     private String str;

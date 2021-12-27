@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -44,7 +45,7 @@ public class ExcelReadTest {
     }
 
     @Test
-    public void readFile3() {
+    public void readFile3() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         String path = getClass().getResource("/").getPath()+"readFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
@@ -54,6 +55,8 @@ public class ExcelReadTest {
                 System.out.println(testEntity);
             },executorService,5);
         }
+        executorService.shutdown();
+        executorService.awaitTermination(1, TimeUnit.HOURS);
     }
 
     @Test

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * 默认BigDecimal转换器
  *
- * @author zhengyuchen
+ * @author rainc
  * @date 2021/8/24
  */
 public class DefaultBigDecimalFieldConverter extends BaseNumericConverter<BigDecimal> {

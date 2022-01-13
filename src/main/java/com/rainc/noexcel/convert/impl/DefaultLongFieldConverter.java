@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * 默认长整型转换器
  *
- * @author zhengyuchen
+ * @author rainc
  * @date 2021/8/22
  */
 public class DefaultLongFieldConverter extends BaseNumericConverter<Long> {

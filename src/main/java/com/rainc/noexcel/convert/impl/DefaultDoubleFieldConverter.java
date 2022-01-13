@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * 默认双精度浮点型转换器
  *
- * @author zhengyuchen
+ * @author rainc
  * @date 2021/8/24
  */
 public class DefaultDoubleFieldConverter extends BaseNumericConverter<Double> {

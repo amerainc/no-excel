@@ -7,21 +7,21 @@ import com.rainc.noexcel.meta.ExcelFieldMeta;
 import java.math.BigDecimal;
 
 /**
- * 默认双精度浮点型转换器
+ * 默认BigDecimal转换器
  *
  * @author zhengyuchen
  * @date 2021/8/24
  */
-public class DefaultDoubleFieldConverter extends BaseNumericConverter<Double> {
+public class DefaultBigDecimalFieldConverter extends BaseNumericConverter<BigDecimal> {
 
     @Override
-    protected Double parseToField(BigDecimal bigDecimal) {
-       return bigDecimal.doubleValue();
+    protected BigDecimal parseToField(BigDecimal bigDecimal) {
+        return bigDecimal;
     }
 
     @Override
-    public String parseToExcelData(Double fieldData) {
-        return fieldData.toString();
+    public String parseToExcelData(BigDecimal fieldData) {
+        return fieldData.toPlainString();
     }
 
     @Override
@@ -33,4 +33,6 @@ public class DefaultDoubleFieldConverter extends BaseNumericConverter<Double> {
     public boolean isSingleton() {
         return true;
     }
+
+
 }

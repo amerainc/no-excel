@@ -1,28 +1,32 @@
 package com.rainc.noexcel.convert.impl;
 
-import com.rainc.noexcel.convert.FieldConverter;
+
+import com.rainc.noexcel.convert.BaseNumericConverter;
 import com.rainc.noexcel.exception.NoExcelException;
 import com.rainc.noexcel.meta.ExcelFieldMeta;
+
+import java.math.BigDecimal;
 
 /**
  * 默认整型转换器
  *
- * @author rainc
+ * @author zhengyuchen
  * @date 2021/8/22
  */
-public class DefaultIntegerFieldConverter implements FieldConverter<Integer> {
+public class DefaultIntegerFieldConverter extends BaseNumericConverter<Integer> {
+
     @Override
-    public Integer parseToField(String excelData) {
+    protected Integer parseToField(BigDecimal bigDecimal) {
         try {
-            return Integer.parseInt(excelData);
-        } catch (NumberFormatException numberFormatException) {
+           return bigDecimal.intValueExact();
+        } catch (Exception e) {
             throw new NoExcelException("必须为整型");
         }
     }
 
     @Override
     public boolean match(ExcelFieldMeta excelFieldMeta) {
-        return FieldConverter.super.match(excelFieldMeta)||int.class==excelFieldMeta.getFieldClz();
+        return super.match(excelFieldMeta)||int.class==excelFieldMeta.getFieldClz();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.rainc.noexcel.util;
 import lombok.var;
 import org.apache.poi.ss.usermodel.*;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +23,24 @@ public class CellUtil {
      * @return 值
      */
     public static String getString(Cell cell) {
-        CellStyle cellStyle = cell.getCellStyle();
-        cell.setCellStyle(null);
-        String value = DATA_FORMATTER.formatCellValue(cell).trim();
-        cell.setCellStyle(cellStyle);
-        return value;
+        CellType cellType = cell.getCellType();
+        switch (cellType) {
+            case NUMERIC :
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    return cell.getDateCellValue().toString();
+                }
+                return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+            case STRING :
+                return cell.getRichStringCellValue().getString();
+            case BOOLEAN :
+                return cell.getBooleanCellValue() ? "TRUE" : "FALSE";
+            case BLANK :
+                return "";
+            case ERROR:
+                return FormulaError.forInt(cell.getErrorCellValue()).getString();
+            default:
+                throw new RuntimeException("Unexpected celltype (" + cellType + ")");
+        }
     }
 
     /**

@@ -25,6 +25,8 @@ public class CellUtil {
     public static String getString(Cell cell) {
         CellType cellType = cell.getCellType();
         switch (cellType) {
+            case FORMULA:
+                return cell.getCellFormula();
             case NUMERIC :
                 if (DateUtil.isCellDateFormatted(cell)) {
                     return cell.getDateCellValue().toString();

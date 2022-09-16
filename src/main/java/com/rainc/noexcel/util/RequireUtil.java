@@ -1,5 +1,7 @@
 package com.rainc.noexcel.util;
 
+import cn.hutool.core.util.StrUtil;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,9 @@ public class RequireUtil {
      * @return 标题
      */
     public static String requireTitleToTitle(String requireTitle) {
+        if (StrUtil.isBlank(requireTitle)){
+            return requireTitle;
+        }
         Pattern compile = Pattern.compile(REQUIRE_REGEX);
         Matcher matcher = compile.matcher(requireTitle);
         if (matcher.find()) {

@@ -104,8 +104,6 @@ public class ExcelFieldMeta {
         if (StrUtil.isBlank(excelData)) {
             if (require) {
                 throw new NoExcelException("不能为空");
-            } else {
-                return;
             }
         }
         ReflectUtil.invoke(object, this.setMethod, this.getConverter().parseToField(excelData));

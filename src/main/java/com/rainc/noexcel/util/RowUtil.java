@@ -1,7 +1,7 @@
 package com.rainc.noexcel.util;
 
+import cn.hutool.core.util.StrUtil;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -100,7 +100,8 @@ public class RowUtil {
         }
         for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
             Cell cell = row.getCell(c);
-            if (cell != null && cell.getCellType() != CellType.BLANK) {
+            //如果有不为空的单元格则返回false
+            if (!StrUtil.isEmpty(CellUtil.getString(cell))) {
                 return false;
             }
         }

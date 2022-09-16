@@ -23,6 +23,9 @@ public class CellUtil {
      * @return 值
      */
     public static String getString(Cell cell) {
+        if (cell==null){
+            return "";
+        }
         CellType cellType = cell.getCellType();
         switch (cellType) {
             case FORMULA:

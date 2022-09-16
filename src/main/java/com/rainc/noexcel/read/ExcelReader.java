@@ -11,6 +11,7 @@ import com.rainc.noexcel.util.RequireUtil;
 import com.rainc.noexcel.util.RowUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
@@ -39,6 +40,12 @@ public class ExcelReader<T> extends BaseExcel<T> {
 
     public ExcelReader(Workbook workbook, Class<T> clz) {
         super(workbook.getSheetAt(0), clz);
+        //如果有对应标题的工作簿，则使用标题工作簿
+        String title = excelEntityMeta.getTitle();
+        Sheet titleSheet = workbook.getSheet(title);
+        if (titleSheet !=null){
+            this.sheet= titleSheet;
+        }
     }
 
     @Override
@@ -64,7 +71,7 @@ public class ExcelReader<T> extends BaseExcel<T> {
 
         for (int i = 0; i < head.getLastCellNum(); i++) {
             Cell cell = head.getCell(i);
-            String value = cell.getStringCellValue();
+            String value = CellUtil.getString(cell);
             value = RequireUtil.requireTitleToTitle(value);
             final int sort = i;
             //通过excel的表头和字段顺序进行匹配

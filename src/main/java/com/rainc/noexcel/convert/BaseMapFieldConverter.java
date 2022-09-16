@@ -19,11 +19,11 @@ public abstract class BaseMapFieldConverter<T> implements FieldConverter<T>, Sel
     /**
      * 属性和excel值的映射
      */
-    private Map<T, String> fieldToExcelDataMap;
+    protected Map<T, String> fieldToExcelDataMap;
     /**
      * excel和属性值的映射
      */
-    private Map<String, T> excelDataToFieldMap;
+    protected Map<String, T> excelDataToFieldMap;
 
     /**
      * 属性和excel值的映射

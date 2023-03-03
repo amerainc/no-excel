@@ -1,6 +1,6 @@
-package com.rainc.noexcel.builder;
+package com.rainc.noexcel.read;
 
-import com.rainc.noexcel.read.ExcelReader;
+import com.rainc.noexcel.BaseExcelBuilder;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;

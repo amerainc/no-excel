@@ -1,7 +1,7 @@
 package com.rainc.noexcel;
 
-import com.rainc.noexcel.builder.ExcelReaderBuilder;
-import com.rainc.noexcel.builder.ExcelWriterBuilder;
+import com.rainc.noexcel.read.ExcelReaderBuilder;
+import com.rainc.noexcel.write.ExcelWriterBuilder;
 import com.rainc.noexcel.meta.BaseErrMsg;
 import com.rainc.noexcel.read.ExcelReader;
 import com.rainc.noexcel.write.ExcelWriter;
@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 public class ExcelReadTest {
     @Test
     public void readFile() {
-        String path = getClass().getResource("/").getPath()+"readFile.xls";
+        String path = getClass().getResource("/").getPath()+"";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
-        try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {
+        try (ExcelReader<TestEntity> excelReader = builder.build(getClass().getResourceAsStream("readFile.xls"))) {
             List<TestEntity> testEntities = excelReader.readData();
             for (TestEntity testEntity : testEntities) {
                 System.out.println(testEntity);
@@ -35,7 +35,7 @@ public class ExcelReadTest {
     }
     @Test
     public void readFile2() {
-        String path = getClass().getResource("/").getPath()+"readFile.xls";
+        String path = getClass().getResource("/").getPath()+ "readFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
         try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {
            excelReader.readData(testEntity -> {
@@ -47,7 +47,7 @@ public class ExcelReadTest {
     @Test
     public void readFile3() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
-        String path = getClass().getResource("/").getPath()+"readFile.xls";
+        String path = getClass().getResource("/").getPath()+ "readFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
         try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {
             //这里将数据分为五片，并交由五个线程处理
@@ -62,7 +62,7 @@ public class ExcelReadTest {
     @Test
     public void readerrorFile() {
         //读取excel
-        String path = getClass().getResource("/").getPath()+"readerrFile.xls";
+        String path = getClass().getResource("/").getPath()+ "readerrFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
         List<TestEntity> testEntities;
         try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {

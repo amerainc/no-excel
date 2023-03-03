@@ -1,6 +1,5 @@
 package com.rainc.noexcel.util;
 
-import lombok.var;
 import org.apache.poi.ss.usermodel.*;
 
 import java.math.BigDecimal;
@@ -80,9 +79,9 @@ public class CellUtil {
      * @param cell 需要自适应宽度的单元格所在列(需要有数据)
      */
     public static void autoWidth(Cell cell) {
-        var sheet = cell.getSheet();
-        var value = CellUtil.getString(cell);
-        var bytes = value.getBytes(StandardCharsets.UTF_8);
+        Sheet sheet = cell.getSheet();
+        String value = CellUtil.getString(cell);
+        byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
         sheet.setColumnWidth(cell.getColumnIndex(), 256 * bytes.length);
     }
 }

@@ -73,7 +73,6 @@ public class ExcelWriter<T> extends BaseExcel<T> {
 
     @Override
     public void init() {
-        super.init();
         initSheet();
         initTitle();
         initHead();
@@ -90,7 +89,7 @@ public class ExcelWriter<T> extends BaseExcel<T> {
         }
         for (ExcelFieldMeta excelFieldMeta : this.excelFieldMetaList) {
             //生成级联就不生成普通下拉框了
-            FieldConverter converter = excelFieldMeta.getConverter();
+            FieldConverter<?> converter = excelFieldMeta.getConverter();
             if (converter instanceof CascadeProvider){
                 CascadeProvider cascadeProvider= (CascadeProvider) converter;
                 Map<String, List<String>> cascade = cascadeProvider.cascade();
@@ -168,7 +167,7 @@ public class ExcelWriter<T> extends BaseExcel<T> {
      */
     private void initTitle() {
         //如果不展示标题则不进行标题初始化
-        if (!this.excelEntityMeta.isShowTitle()) {
+        if (!this.excelEntityMeta.isHasTitle()) {
             return;
         }
         int index = this.curIndex++;
@@ -187,7 +186,7 @@ public class ExcelWriter<T> extends BaseExcel<T> {
      */
     private void initHead() {
         //如果不展示表头则不进行表头初始化
-        if (!this.excelEntityMeta.isShowHead()) {
+        if (!this.excelEntityMeta.isHasHead()) {
             return;
         }
         int headIndex = curIndex++;

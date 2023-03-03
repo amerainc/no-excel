@@ -1,8 +1,7 @@
-package com.rainc.noexcel.builder;
+package com.rainc.noexcel;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.lang.func.Func1;
-import com.rainc.noexcel.BaseExcel;
 import com.rainc.noexcel.meta.BaseErrMsg;
 import com.rainc.noexcel.meta.ExcelEntityMeta;
 import com.rainc.noexcel.style.StyleProvider;
@@ -36,13 +35,13 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
      */
     protected Integer maxSize;
     /**
-     * 是否显示标题
+     * excel是否有标题
      */
-    protected Boolean showTitle;
+    protected Boolean hasTitle;
     /**
-     * 是否显示表头
+     * excel是否有表头
      */
-    protected Boolean showHead;
+    protected Boolean hasHead;
     /**
      * excel导出时的标题名
      */
@@ -63,7 +62,9 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
      * 数据样式
      */
     protected StyleProvider dataStyle;
-
+    /**
+     * 当前行
+     */
     protected int curIndex;
 
 
@@ -117,7 +118,7 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
     protected Instance build(Instance baseExcel) {
         initIgnoreField(baseExcel);
         initExcelEntity(baseExcel);
-        baseExcel.init();
+        baseExcel.doInit();
         return baseExcel;
     }
 
@@ -129,8 +130,8 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
     protected void initExcelEntity(Instance baseExcel) {
         ExcelEntityMeta excelEntityMeta = baseExcel.getExcelEntityMeta();
         Optional.ofNullable(this.maxSize).ifPresent(excelEntityMeta::setMaxSize);
-        Optional.ofNullable(this.showTitle).ifPresent(excelEntityMeta::setShowTitle);
-        Optional.ofNullable(this.showHead).ifPresent(excelEntityMeta::setShowHead);
+        Optional.ofNullable(this.hasTitle).ifPresent(excelEntityMeta::setHasTitle);
+        Optional.ofNullable(this.hasHead).ifPresent(excelEntityMeta::setHasHead);
         Optional.ofNullable(this.title).ifPresent(excelEntityMeta::setTitle);
         Optional.ofNullable(this.titleStyle).ifPresent(excelEntityMeta::setTitleStyle);
         Optional.ofNullable(this.headStyle).ifPresent(excelEntityMeta::setHeadStyle);
@@ -174,12 +175,12 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
         return (Builder) this;
     }
 
-    public Boolean getShowTitle() {
-        return showTitle;
+    public Boolean getHasTitle() {
+        return hasTitle;
     }
 
-    public Builder setShowTitle(Boolean showTitle) {
-        this.showTitle = showTitle;
+    public Builder setHasTitle(Boolean hasTitle) {
+        this.hasTitle = hasTitle;
         return (Builder) this;
     }
 
@@ -234,6 +235,15 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
 
     public Builder setCurIndex(int curIndex) {
         this.curIndex = curIndex;
+        return (Builder) this;
+    }
+
+    public Boolean getHasHead() {
+        return hasHead;
+    }
+
+    public Builder setHasHead(Boolean hasHead) {
+        this.hasHead = hasHead;
         return (Builder) this;
     }
 }

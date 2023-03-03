@@ -22,13 +22,13 @@ public class ExcelEntityMeta extends CloneSupport<ExcelEntityMeta> {
      */
     String title;
     /**
-     * excel是否显示标题
+     * excel是否有标题
      */
-    boolean showTitle;
+    boolean hasTitle;
     /**
-     * excel是否显示表头
+     * excel是否有表头
      */
-    boolean showHead;
+    boolean hasHead;
     /**
      * 读取写入最大长度
      */

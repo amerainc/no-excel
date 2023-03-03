@@ -3,7 +3,6 @@ package com.rainc.noexcel;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.func.Func1;
 import com.rainc.noexcel.convert.FieldConverterHelper;
-import com.rainc.noexcel.meta.BaseErrMsg;
 import com.rainc.noexcel.meta.ExcelEntityMeta;
 import com.rainc.noexcel.meta.ExcelFieldMeta;
 import com.rainc.noexcel.util.ExcelMetaUtil;
@@ -61,21 +60,33 @@ public abstract class BaseExcel<T> implements Closeable {
 
 
     protected BaseExcel(Sheet sheet, Class<T> clz) {
-        this.workbook = sheet.getWorkbook();
+        this(sheet.getWorkbook(),sheet,clz);
+    }
+
+    protected BaseExcel(Workbook workbook,Sheet sheet, Class<T> clz) {
+        this.workbook = workbook;
         this.sheet = sheet;
         this.clz = clz;
+        //解析类
         this.analyseClass();
     }
 
     /**
      * 初始化
      */
-    public void init() {
+    protected void doInit() {
         if (this.isInit) {
             return;
         }
+        //初始化
+        init();
         this.isInit = true;
     }
+
+    /**
+     * 初始化
+     */
+    protected abstract void init();
 
     /**
      * 解析类信息
@@ -122,7 +133,7 @@ public abstract class BaseExcel<T> implements Closeable {
      * 忽略错误信息行
      */
     public void ignoreErrMsg() {
-        this.ignoreWithFieldName(BaseErrMsg::getErrMsg);
+        this.ignoreWithFieldName("errMsg");
     }
 
     /**

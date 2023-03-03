@@ -1,6 +1,6 @@
 package com.rainc.noexcel;
 
-import com.rainc.noexcel.builder.ExcelWriterBuilder;
+import com.rainc.noexcel.write.ExcelWriterBuilder;
 import com.rainc.noexcel.write.ExcelWriter;
 import org.junit.jupiter.api.Test;
 

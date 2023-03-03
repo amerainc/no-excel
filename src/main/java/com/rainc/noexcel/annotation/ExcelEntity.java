@@ -20,14 +20,14 @@ public @interface ExcelEntity {
     String title();
 
     /**
-     * excel是否显示标题
+     * excel是否有标题
      */
-    boolean showTitle() default true;
+    boolean hasTitle() default true;
 
     /**
-     * excel显示表头
+     * excel是否有表头
      */
-    boolean showHead() default true;
+    boolean hasHead() default true;
 
     /**
      * 读取写入最大数据量

@@ -1,9 +1,10 @@
-package com.rainc.noexcel.builder;
+package com.rainc.noexcel.write;
 
-import com.rainc.noexcel.write.ExcelWriter;
+import com.rainc.noexcel.BaseExcelBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.function.Consumer;
 
@@ -19,6 +20,7 @@ import java.util.function.Consumer;
 public class ExcelWriterBuilder<T> extends BaseExcelBuilder<T, ExcelWriter<T>, ExcelWriterBuilder<T>> {
     private boolean xlsx;
     private boolean select=true;
+    private Integer sheetIndex;
 
     public ExcelWriterBuilder(Class<T> clz) {
         super(clz);
@@ -50,6 +52,11 @@ public class ExcelWriterBuilder<T> extends BaseExcelBuilder<T, ExcelWriter<T>, E
 
     @Override
     protected ExcelWriter<T> build(ExcelWriter<T> excelWriter) {
+        //初始化sheetIndex
+        if (sheetIndex!=null){
+            Sheet sheet = excelWriter.getWorkbook().getSheetAt(sheetIndex);
+            excelWriter.setSheet(sheet);
+        }
         excelWriter.setSelect(select);
         return super.build(excelWriter);
     }

@@ -1,5 +1,6 @@
 package com.rainc.noexcel.read;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.rainc.noexcel.BaseExcel;
 import com.rainc.noexcel.exception.NoExcelException;
@@ -28,6 +29,9 @@ import java.util.stream.Collectors;
  * @date 2021/8/12
  */
 public class ExcelReader<T> extends BaseExcel<T> {
+    /**
+     * excel数据
+     */
     private List<Row> data;
 
     public ExcelReader(InputStream inputStream, Class<T> clz) {
@@ -43,14 +47,13 @@ public class ExcelReader<T> extends BaseExcel<T> {
         //如果有对应标题的工作簿，则使用标题工作簿
         String title = excelEntityMeta.getTitle();
         Sheet titleSheet = workbook.getSheet(title);
-        if (titleSheet !=null){
-            this.sheet= titleSheet;
+        if (titleSheet != null) {
+            this.sheet = titleSheet;
         }
     }
 
     @Override
     public void init() {
-        super.init();
         initTitle();
         initHead();
         initData();
@@ -61,6 +64,10 @@ public class ExcelReader<T> extends BaseExcel<T> {
      * 初始化表头
      */
     private void initHead() {
+        //没表头忽略该项
+        if (!this.excelEntityMeta.isHasHead()) {
+            return;
+        }
         int headIndex = this.curIndex++;
         Row head = this.sheet.getRow(headIndex);
         Map<String, ExcelFieldMeta> excelFieldMetaMap = this.excelFieldMetaList
@@ -74,29 +81,37 @@ public class ExcelReader<T> extends BaseExcel<T> {
             String value = CellUtil.getString(cell);
             value = RequireUtil.requireTitleToTitle(value);
             final int sort = i;
-            //通过excel的表头和字段顺序进行匹配
+            //通过excel的头部和字段顺序进行匹配
             excelFieldMetaMap.computeIfPresent(value, (key, excelFieldMeta) -> {
                 excelFieldMeta.setSort(sort);
                 return excelFieldMeta;
             });
         }
-        //过滤不存在的元素并重新排序
-        this.excelFieldMetaList = this.excelFieldMetaList.stream()
+        List<ExcelFieldMeta> matchList = this.excelFieldMetaList.stream()
                 .filter(excelFieldMeta -> excelFieldMeta.getSort() != null)
                 .sorted(Comparator.comparing(ExcelFieldMeta::getSort))
                 .collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(matchList)) {
+            throw new NoExcelException("表头没有字段匹配成功，如果没有表头请设置@ExcelEntity的hasHead为false");
+        }
+        //过滤不存在的元素并重新排序
+        this.excelFieldMetaList = matchList;
     }
 
     /**
      * 初始化标题
      */
     private void initTitle() {
+        //没标题，读取忽略该行
+        if (!this.excelEntityMeta.isHasTitle()) {
+            return;
+        }
         Row row = this.sheet.getRow(this.curIndex);
         Cell cell = CellUtil.getCell(0, row);
         String value = CellUtil.getString(cell);
         //与标题不相等则认为没有标题
         if (!this.excelEntityMeta.getTitle().equals(value)) {
-            return;
+            throw new NoExcelException("标题没有匹配成功，如果没有标题请设置@ExcelEntity的hasTitle为false");
         }
         this.curIndex++;
     }
@@ -121,19 +136,44 @@ public class ExcelReader<T> extends BaseExcel<T> {
      * @return 读取到的数据列表
      */
     public List<T> readData() {
-       return readData(0,1);
+        return readData(0, 1);
+    }
+
+    /**
+     * 读取数据并关闭流
+     *
+     * @return 读取到的数据列表
+     */
+    public List<T> readDataAndClose() {
+        List<T> list = readData();
+        this.close();
+        return list;
     }
 
     /**
      * 读取数据
+     *
      * @param index 当前分片
      * @param total 总分片
      * @return 读取到的数据列表
      */
-    public List<T> readData(int index,int total) {
+    public List<T> readData(int index, int total) {
         checkClosed();
         List<T> list = new ArrayList<>(this.data.size());
-        readData(list::add,index,total);
+        readData(list::add, index, total);
+        return list;
+    }
+
+    /**
+     * 读取数据
+     *
+     * @param index 当前分片
+     * @param total 总分片
+     * @return 读取到的数据列表
+     */
+    public List<T> readDataAndClose(int index, int total) {
+        List<T> list = readData(index, total);
+        this.close();
         return list;
     }
 
@@ -143,7 +183,7 @@ public class ExcelReader<T> extends BaseExcel<T> {
      * @param consumer 消费者
      */
     public void readData(Consumer<T> consumer) {
-        readData(consumer,0,1);
+        readData(consumer, 0, 1);
     }
 
     /**
@@ -151,31 +191,64 @@ public class ExcelReader<T> extends BaseExcel<T> {
      *
      * @param consumer 消费者
      */
-    public void readDataConcurrent(Consumer<T> consumer, Executor executor,int total) {
+    public void readDataAndClose(Consumer<T> consumer) {
+        readData(consumer, 0, 1);
+        this.close();
+    }
+
+    /**
+     * 并发消费数据
+     *
+     * @param consumer 消费者
+     */
+    public void readDataConcurrent(Consumer<T> consumer, Executor executor, int total) {
         for (int i = 0; i < total; i++) {
             int index = i;
-            executor.execute(()-> readData(consumer, index,total));
+            executor.execute(() -> readData(consumer, index, total));
+        }
+    }
+
+    /**
+     * 并发消费数据并关闭
+     *
+     * @param consumer 消费者
+     */
+    public void readDataConcurrentAndClose(Consumer<T> consumer, Executor executor, int total) {
+        readDataConcurrent(consumer, executor, total);
+        this.close();
+    }
+
+    /**
+     * 分片消费数据
+     *
+     * @param consumer 消费者
+     * @param index    当前分片
+     * @param total    总分片
+     */
+    public void readData(Consumer<T> consumer, int index, int total) {
+        checkClosed();
+        List<Row> rows = this.data;
+        int size = rows.size();
+        int fragment = size / total;
+        int start = fragment * index;
+        int end = index == (total - 1) ? size : (fragment * (index + 1));
+        for (int i = start; i < end; i++) {
+            T data = readRow(rows.get(i));
+            //消费数据
+            consumer.accept(data);
         }
     }
 
     /**
      * 分片消费数据
+     *
      * @param consumer 消费者
-     * @param index 当前分片
-     * @param total 总分片
+     * @param index    当前分片
+     * @param total    总分片
      */
-    public void readData(Consumer<T> consumer,int index,int total) {
-        checkClosed();
-        List<Row> rows = this.data;
-        int size = rows.size();
-        int fragment = size / total;
-        int start = fragment*index;
-        int end = index==(total-1)?size:(fragment*(index+1));
-        for (int i = start; i < end; i++) {
-            T data = readData(rows.get(i));
-            //消费数据
-            consumer.accept(data);
-        }
+    public void readDataAndClose(Consumer<T> consumer, int index, int total) {
+        readData(consumer, index, total);
+        this.close();
     }
 
     /**
@@ -184,7 +257,7 @@ public class ExcelReader<T> extends BaseExcel<T> {
      * @param row 某行数据
      * @return
      */
-    private T readData(Row row) {
+    private T readRow(Row row) {
         T data = createData();
         //如果需要异常初始化
         StringBuffer errMsg = null;
@@ -242,5 +315,11 @@ public class ExcelReader<T> extends BaseExcel<T> {
         if (this.isClosed) {
             throw new NoExcelException("ExcelWriter 已经关闭");
         }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        this.data=null;
     }
 }

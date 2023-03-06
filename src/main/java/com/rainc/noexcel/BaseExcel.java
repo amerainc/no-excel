@@ -58,17 +58,16 @@ public abstract class BaseExcel<T> implements Closeable {
      */
     protected Class<T> clz;
 
-
     protected BaseExcel(Sheet sheet, Class<T> clz) {
-        this(sheet.getWorkbook(),sheet,clz);
+        this.workbook = sheet.getWorkbook();
+        this.sheet = sheet;
+        this.clz = clz;
     }
 
-    protected BaseExcel(Workbook workbook,Sheet sheet, Class<T> clz) {
+    protected BaseExcel(Workbook workbook, Sheet sheet, Class<T> clz) {
         this.workbook = workbook;
         this.sheet = sheet;
         this.clz = clz;
-        //解析类
-        this.analyseClass();
     }
 
     /**
@@ -78,6 +77,8 @@ public abstract class BaseExcel<T> implements Closeable {
         if (this.isInit) {
             return;
         }
+        //解析类
+        this.analyseClass();
         //初始化
         init();
         this.isInit = true;
@@ -109,7 +110,7 @@ public abstract class BaseExcel<T> implements Closeable {
      *
      * @param fieldName 忽略行的属性名
      */
-    public void ignoreWithFieldName(String fieldName) {
+    protected void ignoreWithFieldName(String fieldName) {
         checkClosed();
         this.excelFieldMetaList.removeIf(excelFieldMeta -> excelFieldMeta.getFieldName().equals(fieldName));
     }
@@ -124,15 +125,15 @@ public abstract class BaseExcel<T> implements Closeable {
      *
      * @param func1 忽略行的get方法
      */
-    public <F> void ignoreWithFieldName(Func1<F, ?> func1) {
+    protected  <F> void ignoreWithFieldName(Func1<F, ?> func1) {
         String fieldName = MethodUtil.getFieldNameWithGetter(func1);
         this.ignoreWithFieldName(fieldName);
     }
 
     /**
-     * 忽略错误信息行
+     * 忽略错误信息列
      */
-    public void ignoreErrMsg() {
+    protected void ignoreErrMsg() {
         this.ignoreWithFieldName("errMsg");
     }
 

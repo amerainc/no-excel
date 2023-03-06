@@ -126,8 +126,6 @@ public class ExcelReader<T> extends BaseExcel<T> {
         if (this.excelEntityMeta.getMaxSize() < this.data.size()) {
             throw new NoExcelException("数据量超出当前限制" + this.excelEntityMeta.getMaxSize() + "条");
         }
-        //忽略错误行的读取
-        this.ignoreErrMsg();
     }
 
     /**

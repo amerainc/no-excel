@@ -2,7 +2,6 @@ package com.rainc.noexcel;
 
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.lang.func.Func1;
-import com.rainc.noexcel.meta.BaseErrMsg;
 import com.rainc.noexcel.meta.ExcelEntityMeta;
 import com.rainc.noexcel.style.StyleProvider;
 import com.rainc.noexcel.util.MethodUtil;
@@ -67,6 +66,8 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
      */
     protected int curIndex;
 
+    protected boolean ignoreErrMsg;
+
 
     public BaseExcelBuilder(Class<T> clz) {
         this.clz = clz;
@@ -91,13 +92,6 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
     public <F> Builder ignoreWithFieldName(Func1<F, ?> func1) {
         String fieldName = MethodUtil.getFieldNameWithGetter(func1);
         return this.ignoreWithFieldName(fieldName);
-    }
-
-    /**
-     * 忽略错误信息行
-     */
-    public Builder ignoreErrMsg() {
-        return this.ignoreWithFieldName(BaseErrMsg::getErrMsg);
     }
 
     /**
@@ -145,6 +139,9 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
      * @param baseExcel 实现类创建的实例
      */
     private void initIgnoreField(Instance baseExcel) {
+        if (ignoreErrMsg){
+            baseExcel.ignoreErrMsg();
+        }
         this.ignoreFieldNameSet.forEach(baseExcel::ignoreWithFieldName);
     }
 

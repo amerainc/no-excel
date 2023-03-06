@@ -2,7 +2,10 @@ package com.rainc.noexcel.util;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.rainc.noexcel.meta.BaseErrMsg;
+import com.rainc.noexcel.write.ExcelWriter;
+import com.rainc.noexcel.write.ExcelWriterBuilder;
 
+import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +37,7 @@ public class NoExcelUtil {
      * @param <T>  继承BaseErrMsg
      * @return 没问题的数据
      */
-    public static <T extends BaseErrMsg> List<T> filterSucMsg(List<T> data) {
+    public static <T extends BaseErrMsg> List<T> filterSucList(List<T> data) {
         if (CollectionUtil.isEmpty(data)) {
             return null;
         }
@@ -67,5 +70,14 @@ public class NoExcelUtil {
      */
     public static boolean hasNoErr(List<BaseErrMsg> data) {
         return hasErr(data);
+    }
+
+    public static <T extends BaseErrMsg>  void writeErrMsg(List<T> data, OutputStream os){
+        if (CollectionUtil.isEmpty(data)){
+            return;
+        }
+        List<T> errList = filterErrList(data);
+        ExcelWriter<T> excelWriter = (ExcelWriter<T>) ExcelWriterBuilder.builder(data.get(0).getClass()).build();
+        excelWriter.writeData(errList,os);
     }
 }

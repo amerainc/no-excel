@@ -59,15 +59,15 @@ public abstract class BaseExcel<T> implements Closeable {
     protected Class<T> clz;
 
     protected BaseExcel(Sheet sheet, Class<T> clz) {
-        this.workbook = sheet.getWorkbook();
-        this.sheet = sheet;
-        this.clz = clz;
+        this(sheet.getWorkbook(),sheet,clz);
     }
 
     protected BaseExcel(Workbook workbook, Sheet sheet, Class<T> clz) {
         this.workbook = workbook;
         this.sheet = sheet;
         this.clz = clz;
+        //解析类
+        this.analyseClass();
     }
 
     /**
@@ -77,8 +77,6 @@ public abstract class BaseExcel<T> implements Closeable {
         if (this.isInit) {
             return;
         }
-        //解析类
-        this.analyseClass();
         //初始化
         init();
         this.isInit = true;

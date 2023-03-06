@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit;
 public class ExcelReadTest {
     @Test
     public void readFile() {
-        String path = getClass().getResource("/").getPath()+"";
+        String path ="readFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
-        try (ExcelReader<TestEntity> excelReader = builder.build(getClass().getResourceAsStream("readFile.xls"))) {
+        try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {
             List<TestEntity> testEntities = excelReader.readData();
             for (TestEntity testEntity : testEntities) {
                 System.out.println(testEntity);
@@ -32,7 +32,7 @@ public class ExcelReadTest {
     }
     @Test
     public void readFile2() {
-        String path = getClass().getResource("/").getPath()+ "readFile.xls";
+        String path ="readFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
         try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {
            excelReader.readData(testEntity -> {
@@ -44,7 +44,7 @@ public class ExcelReadTest {
     @Test
     public void readFile3() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
-        String path = getClass().getResource("/").getPath()+ "readFile.xls";
+        String path ="readFile.xls";
         ExcelReaderBuilder<TestEntity> builder = ExcelReaderBuilder.builder(TestEntity.class);
         try (ExcelReader<TestEntity> excelReader = builder.build(new File(path))) {
             //这里将数据分为五片，并交由五个线程处理

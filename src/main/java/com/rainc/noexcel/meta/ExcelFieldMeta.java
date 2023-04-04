@@ -4,12 +4,13 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.rainc.noexcel.convert.FieldConverter;
 import com.rainc.noexcel.exception.NoExcelException;
+import com.rainc.noexcel.util.MethodUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -47,7 +48,11 @@ public class ExcelFieldMeta {
     /**
      * 字段转换器
      */
-    FieldConverter converter;
+    FieldConverter converterInstance;
+    /**
+     * 字段转换器类
+     */
+    Class<?> converter;
     /**
      * 属性归属的类
      */
@@ -72,10 +77,20 @@ public class ExcelFieldMeta {
      * get方法
      */
     Method setMethod;
+
+    public void setField(Field field) {
+        this.field = field;
+        this.fieldClz=field.getType();
+        this.fieldName=field.getName();
+        PropertyDescriptor propertyDescriptor = MethodUtil.getPropertyDescriptor(field,field.getDeclaringClass());
+        this.getMethod=propertyDescriptor.getReadMethod();
+        this.setMethod=propertyDescriptor.getWriteMethod();
+        this.belongClz=field.getDeclaringClass();
+    }
     /**
      * 下拉框数据
      */
-    DataValidationConstraint constraint;
+//    DataValidationConstraint constraint;
 
     /**
      * 获取字段属性并转换为excel展示数据
@@ -91,7 +106,7 @@ public class ExcelFieldMeta {
         if (field == null) {
             return "";
         }
-        return this.getConverter().parseToExcelData(field);
+        return this.getConverterInstance().parseToExcelData(field);
     }
 
     /**
@@ -106,7 +121,7 @@ public class ExcelFieldMeta {
                 throw new NoExcelException("不能为空");
             }
         }
-        ReflectUtil.invoke(object, this.setMethod, this.getConverter().parseToField(excelData));
+        ReflectUtil.invoke(object, this.setMethod, this.getConverterInstance().parseToField(excelData));
     }
 
     @Override

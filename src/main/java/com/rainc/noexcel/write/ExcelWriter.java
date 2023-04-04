@@ -89,7 +89,7 @@ public class ExcelWriter<T> extends BaseExcel<T> {
         }
         for (ExcelFieldMeta excelFieldMeta : this.excelFieldMetaList) {
             //生成级联就不生成普通下拉框了
-            FieldConverter<?> converter = excelFieldMeta.getConverter();
+            FieldConverter<?> converter = excelFieldMeta.getConverterInstance();
             if (converter instanceof CascadeProvider){
                 CascadeProvider cascadeProvider= (CascadeProvider) converter;
                 Map<String, List<String>> cascade = cascadeProvider.cascade();

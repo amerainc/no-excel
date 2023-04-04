@@ -97,8 +97,6 @@ public abstract class BaseExcel<T> implements Closeable {
             ExcelFieldMeta excelFieldMeta = this.excelFieldMetaList.get(i);
             //将排序置为list中的下标
             excelFieldMeta.setSort(i);
-            //初始化字段转换器
-            excelFieldMeta.setConverter(FieldConverterHelper.getFieldConverter(excelFieldMeta));
         }
     }
 

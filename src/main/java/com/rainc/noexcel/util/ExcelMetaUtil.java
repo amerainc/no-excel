@@ -3,12 +3,11 @@ package com.rainc.noexcel.util;
 import cn.hutool.core.util.ReflectUtil;
 import com.rainc.noexcel.annotation.ExcelEntity;
 import com.rainc.noexcel.annotation.ExcelField;
-import com.rainc.noexcel.exception.ExcelEntityNotFoundException;
+import com.rainc.noexcel.convert.FieldConverterHelper;
 import com.rainc.noexcel.meta.ExcelEntityMeta;
 import com.rainc.noexcel.meta.ExcelFieldMeta;
 import com.rainc.noexcel.style.StyleProviderHelper;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -48,7 +47,7 @@ public class ExcelMetaUtil {
     private static ExcelEntityMeta analyseExcelEntityMeta(Class<?> clz) {
         ExcelEntity excelEntity = clz.getAnnotation(ExcelEntity.class);
         if (excelEntity == null) {
-            throw new ExcelEntityNotFoundException();
+            return new ExcelEntityMeta();
         }
         ExcelEntityMeta excelEntityMeta = AnnotationUtil.annotation2Bean(clz, ExcelEntity.class, ExcelEntityMeta.class);
         excelEntityMeta.setTitleStyle(StyleProviderHelper.getStyleProvider(excelEntity.titleStyle()));
@@ -70,13 +69,15 @@ public class ExcelMetaUtil {
                 .filter(field -> field.getAnnotation(ExcelField.class) != null)
                 .map(field -> {
                     ExcelFieldMeta excelFieldMeta = AnnotationUtil.annotation2Bean(field, ExcelField.class, ExcelFieldMeta.class);
-                    excelFieldMeta.setBelongClz(clz);
-                    excelFieldMeta.setFieldName(field.getName());
                     excelFieldMeta.setField(field);
-                    excelFieldMeta.setFieldClz(field.getType());
-                    PropertyDescriptor propertyDescriptor = MethodUtil.getPropertyDescriptor(field, clz);
-                    excelFieldMeta.setGetMethod(propertyDescriptor.getReadMethod());
-                    excelFieldMeta.setSetMethod(propertyDescriptor.getWriteMethod());
+                    //初始化字段转换器
+                    excelFieldMeta.setConverterInstance(FieldConverterHelper.getFieldConverter(excelFieldMeta));
+//                    excelFieldMeta.setBelongClz(clz);
+//                    excelFieldMeta.setFieldName(field.getName());
+//                    excelFieldMeta.setFieldClz(field.getType());
+//                    PropertyDescriptor propertyDescriptor = MethodUtil.getPropertyDescriptor(field, clz);
+//                    excelFieldMeta.setGetMethod(propertyDescriptor.getReadMethod());
+//                    excelFieldMeta.setSetMethod(propertyDescriptor.getWriteMethod());
                     return excelFieldMeta;
                 })
                 .sorted(Comparator.comparing(ExcelFieldMeta::getSort))

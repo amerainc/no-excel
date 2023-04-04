@@ -59,9 +59,7 @@ public class FieldConverterHelper {
     public static FieldConverter getFieldConverter(ExcelFieldMeta excelFieldMeta) {
         return Optional.ofNullable(FIELD_CONVERTER_CACHE.get(excelFieldMeta))
                 .orElseGet(() -> {
-                    Field field = excelFieldMeta.getField();
-                    ExcelField excelField = field.getAnnotation(ExcelField.class);
-                    FieldConverter fieldConverter = getFieldConverter(excelField.converter());
+                    FieldConverter fieldConverter = getFieldConverter((Class<? extends FieldConverter>) excelFieldMeta.getConverter());
                     fieldConverter.initData(excelFieldMeta);
                     FIELD_CONVERTER_CACHE.put(excelFieldMeta,fieldConverter);
                     return fieldConverter;

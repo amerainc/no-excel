@@ -1,15 +1,17 @@
 package com.rainc.noexcel;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.lang.func.Func1;
 import com.rainc.noexcel.meta.ExcelEntityMeta;
+import com.rainc.noexcel.meta.ExcelFieldMeta;
+import com.rainc.noexcel.read.ExcelReader;
 import com.rainc.noexcel.style.StyleProvider;
 import com.rainc.noexcel.util.MethodUtil;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Excel建造者模板
@@ -68,6 +70,11 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
 
     protected boolean ignoreErrMsg;
 
+    /**
+     * excel字段信息列表
+     */
+    protected List<ExcelFieldMeta> excelFieldMetaList;
+
 
     public BaseExcelBuilder(Class<T> clz) {
         this.clz = clz;
@@ -84,6 +91,18 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
         return self();
     }
 
+    public Builder addExcelFieldMeta(ExcelFieldMeta... excelFieldMeta) {
+        return addExcelFieldMeta(Arrays.asList(excelFieldMeta));
+    }
+
+    public Builder addExcelFieldMeta(List<ExcelFieldMeta> addList) {
+        if (CollectionUtil.isEmpty(this.excelFieldMetaList)) {
+            this.excelFieldMetaList = new ArrayList<>();
+        }
+        excelFieldMetaList.addAll(addList);
+        return self();
+    }
+
     /**
      * 忽略信息行
      *
@@ -93,6 +112,7 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
         String fieldName = MethodUtil.getFieldNameWithGetter(func1);
         return this.ignoreWithFieldName(fieldName);
     }
+
 
     /**
      * 返回自身
@@ -112,8 +132,21 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
     protected Instance build(Instance baseExcel) {
         initIgnoreField(baseExcel);
         initExcelEntity(baseExcel);
+        initExcelFieldMetaList(baseExcel);
         baseExcel.doInit();
         return baseExcel;
+    }
+
+    protected void initExcelFieldMetaList(Instance baseExcel) {
+        if (CollectionUtil.isEmpty(excelFieldMetaList)) {
+            return;
+        }
+        List<ExcelFieldMeta> fieldMetaList = baseExcel.getExcelFieldMetaList();
+        if (CollectionUtil.isEmpty(fieldMetaList)) {
+            fieldMetaList = new ArrayList<>();
+            baseExcel.setExcelFieldMetaList(fieldMetaList);
+        }
+        fieldMetaList.addAll(excelFieldMetaList);
     }
 
     /**
@@ -139,7 +172,7 @@ public abstract class BaseExcelBuilder<T, Instance extends BaseExcel<T>, Builder
      * @param baseExcel 实现类创建的实例
      */
     private void initIgnoreField(Instance baseExcel) {
-        if (ignoreErrMsg){
+        if (ignoreErrMsg) {
             baseExcel.ignoreErrMsg();
         }
         this.ignoreFieldNameSet.forEach(baseExcel::ignoreWithFieldName);

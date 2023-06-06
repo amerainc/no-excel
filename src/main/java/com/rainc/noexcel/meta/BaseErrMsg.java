@@ -10,9 +10,7 @@ import lombok.Setter;
  * @author zhengyuhen
  * @date 2021/8/23
  */
-@Getter
-@Setter
-public abstract class BaseErrMsg {
+public abstract class BaseErrMsg implements ErrMsg{
     /**
      * 错误信息
      */
@@ -23,15 +21,25 @@ public abstract class BaseErrMsg {
      * 有错误信息
      * @return 有错误信息
      */
+    @Override
     public boolean hasErrMsg(){
-        return StrUtil.isNotBlank(errMsg);
+        return errMsg!=null;
     }
 
     /**
      * 没有错误信息
      * @return 没有错误信息
      */
+    @Override
     public boolean hasNotErrMsg(){
         return !hasErrMsg();
+    }
+
+    @Override
+    public void append(String msg) {
+        if (hasNotErrMsg()){
+            errMsg=new StringBuffer();
+        }
+        errMsg.append(msg);
     }
 }

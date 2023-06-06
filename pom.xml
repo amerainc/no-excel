@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.amerainc</groupId>
@@ -19,12 +21,12 @@
             <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
         </license>
     </licenses>
-<scm>
-    <tag>master</tag>
-    <url>https://github.com/amerainc/no-excel.git</url>
-    <connection>scm:git:https://github.com/amerainc/no-excel.git</connection>
-    <developerConnection>scm:git:git@github.com:amerainc/no-excel.git</developerConnection>
-</scm>
+    <scm>
+        <tag>master</tag>
+        <url>https://github.com/amerainc/no-excel.git</url>
+        <connection>scm:git:https://github.com/amerainc/no-excel.git</connection>
+        <developerConnection>scm:git:git@github.com:amerainc/no-excel.git</developerConnection>
+    </scm>
 
     <properties>
         <java.version>1.8</java.version>
@@ -66,13 +68,34 @@
             <version>${junit.version}</version>
             <scope>compile</scope>
         </dependency>
-    <dependency>
-<scope>provided</scope>
-<groupId>javax.servlet</groupId>
-<artifactId>javax.servlet-api</artifactId>
-<version>4.0.1</version>
-</dependency>
-</dependencies>
+        <dependency>
+            <scope>provided</scope>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+            <version>1.0-rc4</version>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auto</groupId>
+            <artifactId>auto-common</artifactId>
+            <version>0.10</version>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.4.2</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

@@ -5,6 +5,7 @@ import cn.hutool.core.util.ReflectUtil;
 import com.rainc.noexcel.BaseExcel;
 import com.rainc.noexcel.exception.NoExcelException;
 import com.rainc.noexcel.meta.BaseErrMsg;
+import com.rainc.noexcel.meta.ErrMsg;
 import com.rainc.noexcel.meta.ExcelFieldMeta;
 import com.rainc.noexcel.util.CellUtil;
 import com.rainc.noexcel.util.ExcelUtil;
@@ -258,9 +259,7 @@ public class ExcelReader<T> extends BaseExcel<T> {
     private T readRow(Row row) {
         T data = createData();
         //如果需要异常初始化
-        StringBuffer errMsg = null;
-
-        boolean needErrMsg = data instanceof BaseErrMsg;
+        boolean needErrMsg = data instanceof ErrMsg;
         //读取数据
         for (ExcelFieldMeta excelFieldMeta : this.excelFieldMetaList) {
             Cell cell = row.getCell(excelFieldMeta.getSort());
@@ -269,12 +268,9 @@ public class ExcelReader<T> extends BaseExcel<T> {
                 excelFieldMeta.setExcelData(data, value);
             } catch (NoExcelException e) {
                 if (needErrMsg) {
-                    errMsg = appendErrMsg(errMsg, excelFieldMeta, e);
+                   appendErrMsg((ErrMsg) data, excelFieldMeta, e);
                 }
             }
-        }
-        if (needErrMsg) {
-            ((BaseErrMsg) data).setErrMsg(errMsg);
         }
         return data;
     }
@@ -286,14 +282,10 @@ public class ExcelReader<T> extends BaseExcel<T> {
      * @param excelFieldMeta 当前字段信息
      * @param e              异常信息
      */
-    private StringBuffer appendErrMsg(StringBuffer errMsg, ExcelFieldMeta excelFieldMeta, NoExcelException e) {
-        if (errMsg == null) {
-            errMsg = new StringBuffer();
-        }
+    private void appendErrMsg(ErrMsg errMsg, ExcelFieldMeta excelFieldMeta, NoExcelException e) {
         errMsg.append(excelFieldMeta.getName());
         errMsg.append(e.getMessage());
         errMsg.append(";\n");
-        return errMsg;
     }
 
     /**

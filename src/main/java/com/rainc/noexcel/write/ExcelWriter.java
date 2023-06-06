@@ -22,8 +22,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -172,7 +172,9 @@ public class ExcelWriter<T> extends BaseExcel<T> {
         }
         int index = this.curIndex++;
         //合并标题的单元格
-        this.sheet.addMergedRegion(new CellRangeAddress(index, index, 0, this.excelFieldMetaList.size() - 1));
+        if (this.excelFieldMetaList.size()>1){
+            this.sheet.addMergedRegion(new CellRangeAddress(index, index, 0, this.excelFieldMetaList.size() - 1));
+        }
         Row titleRow = RowUtil.getRow(index, sheet);
         //写入标题和样式
         StyleProvider titleStyle = this.getExcelEntityMeta().getTitleStyle();
@@ -328,46 +330,46 @@ public class ExcelWriter<T> extends BaseExcel<T> {
         IoUtil.close(outputStream);
     }
 
-    /**
-     * 写数据到web请求
-     * @param data 数据
-     * @param fileName 文件名
-     * @param request 请求
-     * @param response 响应
-     */
-    @SneakyThrows
-    public void writeDataToResponse(List<T> data, String fileName, HttpServletRequest request, HttpServletResponse response) {
-        OutputStream outputStream = null;
-        try {
-            // 设置header
-            String agent = request.getHeader("User-Agent");
-            boolean msieFlag = agent != null && agent.contains("MSIE") && !agent.contains(
-                    "Firefox");
-            if (msieFlag) {
-                fileName = URLEncoder.encode(fileName, "UTF-8");
-            } else {
-                fileName = new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-            }
-            response.setHeader("Content-type", "application/vnd.ms-excel");
-            response.addHeader("Content-Disposition", "filename=\"" + fileName + "\"");
-            outputStream = response.getOutputStream();
-            this.writeData(data,outputStream);
-            outputStream.flush();
-        } finally {
-            IoUtil.close(outputStream);
-        }
-    }
-
-    /**
-     * 写数据刷新并关闭输出流
-     * @param fileName 文件名
-     * @param request 请求
-     * @param response 响应
-     */
-    @SneakyThrows
-    public void writeTemplateToResponse(String fileName, HttpServletRequest request, HttpServletResponse response) {
-        this.writeDataToResponse(Collections.singletonList(ReflectUtil.newInstance(this.clz)),fileName,request,response);
-    }
+//    /**
+//     * 写数据到web请求
+//     * @param data 数据
+//     * @param fileName 文件名
+//     * @param request 请求
+//     * @param response 响应
+//     */
+//    @SneakyThrows
+//    public void writeDataToResponse(List<T> data, String fileName, HttpServletRequest request, HttpServletResponse response) {
+//        OutputStream outputStream = null;
+//        try {
+//            // 设置header
+//            String agent = request.getHeader("User-Agent");
+//            boolean msieFlag = agent != null && agent.contains("MSIE") && !agent.contains(
+//                    "Firefox");
+//            if (msieFlag) {
+//                fileName = URLEncoder.encode(fileName, "UTF-8");
+//            } else {
+//                fileName = new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+//            }
+//            response.setHeader("Content-type", "application/vnd.ms-excel");
+//            response.addHeader("Content-Disposition", "filename=\"" + fileName + "\"");
+//            outputStream = response.getOutputStream();
+//            this.writeData(data,outputStream);
+//            outputStream.flush();
+//        } finally {
+//            IoUtil.close(outputStream);
+//        }
+//    }
+//
+//    /**
+//     * 写数据刷新并关闭输出流
+//     * @param fileName 文件名
+//     * @param request 请求
+//     * @param response 响应
+//     */
+//    @SneakyThrows
+//    public void writeTemplateToResponse(String fileName, HttpServletRequest request, HttpServletResponse response) {
+//        this.writeDataToResponse(Collections.singletonList(ReflectUtil.newInstance(this.clz)),fileName,request,response);
+//    }
 
     /**
      * 输出模板

@@ -20,6 +20,11 @@ public @interface ExcelEntity {
     String title();
 
     /**
+     * 是否需要错误日志
+     * @return
+     */
+    boolean needErr() default false;
+    /**
      * excel是否有标题
      */
     boolean hasTitle() default true;

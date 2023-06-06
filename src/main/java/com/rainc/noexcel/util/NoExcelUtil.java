@@ -1,11 +1,14 @@
 package com.rainc.noexcel.util;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.rainc.noexcel.meta.BaseErrMsg;
+import com.rainc.noexcel.meta.ErrMsg;
+import com.rainc.noexcel.meta.ErrMsg;
 import com.rainc.noexcel.write.ExcelWriter;
 import com.rainc.noexcel.write.ExcelWriterBuilder;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,28 +23,42 @@ public class NoExcelUtil {
      * 过滤出错误的数据
      *
      * @param data 数据
-     * @param <T>  继承BaseErrMsg
+     * @param <T>  继承ErrMsg
      * @return 解析错误的数据
      */
-    public static <T extends BaseErrMsg> List<T> filterErrList(List<T> data) {
+    public static <T> List<T> filterErrList(List<T> data) {
         if (CollectionUtil.isEmpty(data)) {
             return null;
         }
-        return data.stream().filter(BaseErrMsg::hasErrMsg).collect(Collectors.toList());
+        if (!checkErrMsgList(data)) {
+            return  new ArrayList<>();
+        }
+        return data.stream().filter(t -> ((ErrMsg) t).hasErrMsg()).collect(Collectors.toList());
     }
 
     /**
      * 过滤出没问题的数据
      *
      * @param data 数据
-     * @param <T>  继承BaseErrMsg
+     * @param <T>  继承ErrMsg
      * @return 没问题的数据
      */
-    public static <T extends BaseErrMsg> List<T> filterSucList(List<T> data) {
+    public static <T> List<T> filterSucList(List<T> data) {
         if (CollectionUtil.isEmpty(data)) {
-            return null;
+            return  new ArrayList<>();
         }
-        return data.stream().filter(BaseErrMsg::hasNotErrMsg).collect(Collectors.toList());
+        if (!checkErrMsgList(data)) {
+            return  data;
+        }
+        return data.stream().filter(t -> ((ErrMsg) t).hasNotErrMsg()).collect(Collectors.toList());
+    }
+
+    private static<T> boolean checkErrMsgList(List<T> data) {
+        if (CollectionUtil.isEmpty(data)) {
+            return false;
+        }
+        Object o = data.get(0);
+        return o instanceof ErrMsg;
     }
 
     /**
@@ -50,12 +67,12 @@ public class NoExcelUtil {
      * @param data 数据
      * @return 有无错误数据
      */
-    public static boolean hasErr(List<BaseErrMsg> data) {
-        if (CollectionUtil.isEmpty(data)) {
-            return false;
+    public static<T> boolean hasErr(List<T> data) {
+        if (!checkErrMsgList( data)) {
+           return false;
         }
-        for (BaseErrMsg baseErrMsg : data) {
-            if (baseErrMsg.hasErrMsg()) {
+        for (Object obj : data) {
+            if (((ErrMsg) obj).hasErrMsg()) {
                 return true;
             }
         }
@@ -68,16 +85,17 @@ public class NoExcelUtil {
      * @param data 数据
      * @return 有无错误数据
      */
-    public static boolean hasNoErr(List<BaseErrMsg> data) {
+    public static boolean hasNoErr(List<Object> data) {
         return hasErr(data);
     }
 
-    public static <T extends BaseErrMsg>  void writeErrMsg(List<T> data, OutputStream os){
-        if (CollectionUtil.isEmpty(data)){
+
+    public static <T> void writeErrMsg(List<T> data, OutputStream os) {
+        if (CollectionUtil.isEmpty(data)) {
             return;
         }
         List<T> errList = filterErrList(data);
         ExcelWriter<T> excelWriter = (ExcelWriter<T>) ExcelWriterBuilder.builder(data.get(0).getClass()).build();
-        excelWriter.writeData(errList,os);
+        excelWriter.writeData(errList, os);
     }
 }
